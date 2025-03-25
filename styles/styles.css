@@ -1,0 +1,310 @@
+:root {
+    --primary-color: #f5f5f5;
+    --secondary-color: #888;
+    --accent-color: #4a90e2;
+    --error-color: #ff3333;
+    --success-color: #28a745;
+    --text-color: #333;
+    --background-light: #ffffff;
+    --background-dark: #f5f5f5;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition-speed: 0.3s;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Estilos del body y contenedor principal */
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-color));
+    padding: 20px;
+}
+
+.container {
+    background: var(--background-light);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    width: 100%;
+    max-width: 450px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Estilos de los formularios */
+.form-container {
+    position: relative;
+    transition: all var(--transition-speed) ease;
+}
+
+.form-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* Títulos y encabezados */
+.title {
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 600;
+    position: relative;
+}
+
+.title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background: var(--background-light);
+    border-radius: 3px;
+}
+
+/* Grupos de input */
+.input-group {
+    position: relative;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e1e1e1;
+    border-radius: var(--border-radius);
+    outline: none;
+    transition: all var(--transition-speed);
+    font-size: 1rem;
+    background: var(--background-light);
+}
+
+.input-group input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 70, 190, 0.1);
+}
+
+.input-group input::placeholder {
+    color: #999;
+}
+
+/* Mensajes de error */
+.error-message {
+    color: var(--error-color);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    display: none;
+    padding-left: 0.5rem;
+    animation: slideDown var(--transition-speed);
+}
+
+/* Botones */
+button {
+    background: var(--accent-color);
+    color: var(--primary-color);
+    padding: 1rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all var(--transition-speed);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 1rem;
+}
+
+button:hover {
+    background: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Enlaces para cambiar de formulario */
+.switch-form {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+}
+
+.switch-form p {
+    color: var(--text-color);
+    font-size: 0.95rem;
+}
+
+.switch-form a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color var(--transition-speed);
+}
+
+.switch-form a:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px 15px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #444;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 15px;
+}
+
+.google-btn:hover {
+    background-color: #f7f7f7;
+}
+
+.google-icon {
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+/* Estilos para el separador */
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+    color: #888;
+}
+
+.separator::before,
+.separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+}
+
+.separator span {
+    padding: 0 10px;
+}
+
+/* Estilo para la página de redirección */
+.auth-callback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+}
+
+.loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 2s linear infinite;
+    margin: 20px 0;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Animaciones */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .container {
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .input-group input {
+        padding: 0.8rem;
+    }
+
+    button {
+        padding: 0.8rem;
+    }
+}
+
+/* Estados de validación */
+.input-group input:valid {
+    border-color: var(--success-color);
+}
+
+.input-group input:invalid:not(:placeholder-shown) {
+    border-color: var(--error-color);
+}
+
+/* Efectos de carga */
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Animación para cambio de formularios */
+#registerForm {
+    display: none;
+    animation: fadeIn var(--transition-speed);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

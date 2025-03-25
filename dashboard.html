@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema de Gestión Académica</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/dashboard.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">Sistema Académico</div>
+            <button class="close-sidebar"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link active">
+                    <div class="nav-icon"><i class="fas fa-home"></i></div>
+                    <div class="nav-text">Inicio</div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link menu-item">
+                    <div class="nav-icon"><i class="fas fa-folder"></i></div>
+                    <div class="nav-text">Docencia</div>
+                    <div class="submenu-toggle"><i class="fas fa-chevron-right"></i></div>
+                </a>
+                <ul class="submenu">
+                    <li><a href="#" class="nav-link" data-category="docencia-programas">Programas académicos</a></li>
+                    <li><a href="#" class="nav-link" data-category="docencia-material">Material didáctico</a></li>
+                    <li><a href="#" class="nav-link" data-category="docencia-evaluaciones">Evaluaciones</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link menu-item">
+                    <div class="nav-icon"><i class="fas fa-flask"></i></div>
+                    <div class="nav-text">Investigación</div>
+                    <div class="submenu-toggle"><i class="fas fa-chevron-right"></i></div>
+                </a>
+                <ul class="submenu">
+                    <li><a href="#" class="nav-link" data-category="investigacion-proyectos">Proyectos actuales</a></li>
+                    <li><a href="#" class="nav-link" data-category="investigacion-publicaciones">Publicaciones</a></li>
+                    <li><a href="#" class="nav-link" data-category="investigacion-colaboraciones">Colaboraciones</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link menu-item">
+                    <div class="nav-icon"><i class="fas fa-users"></i></div>
+                    <div class="nav-text">Extensión</div>
+                    <div class="submenu-toggle"><i class="fas fa-chevron-right"></i></div>
+                </a>
+                <ul class="submenu">
+                    <li><a href="#" class="nav-link" data-category="extension-conferencias">Conferencias</a></li>
+                    <li><a href="#" class="nav-link" data-category="extension-talleres">Talleres</a></li>
+                    <li><a href="#" class="nav-link" data-category="extension-eventos">Eventos públicos</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link menu-item">
+                    <div class="nav-icon"><i class="fas fa-book"></i></div>
+                    <div class="nav-text">Artículos científicos</div>
+                    <div class="submenu-toggle"><i class="fas fa-chevron-right"></i></div>
+                </a>
+                <ul class="submenu">
+                    <li><a href="#" class="nav-link" data-category="articulos-borradores">Borradores</a></li>
+                    <li><a href="#" class="nav-link" data-category="articulos-revision">En revisión</a></li>
+                    <li><a href="#" class="nav-link" data-category="articulos-publicados">Publicados</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link menu-item">
+                    <div class="nav-icon"><i class="fas fa-user-graduate"></i></div>
+                    <div class="nav-text">Tutorías</div>
+                    <div class="submenu-toggle"><i class="fas fa-chevron-right"></i></div>
+                </a>
+                <ul class="submenu">
+                    <li><a href="#" class="nav-link" data-category="tutorias-tesis">Proyectos de tesis</a></li>
+                    <li><a href="#" class="nav-link" data-category="tutorias-practicas">Prácticas profesionales</a></li>
+                    <li><a href="#" class="nav-link" data-category="tutorias-servicio">Servicio social</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link menu-item">
+                    <div class="nav-icon"><i class="fas fa-tasks"></i></div>
+                    <div class="nav-text">Gestión</div>
+                    <div class="submenu-toggle"><i class="fas fa-chevron-right"></i></div>
+                </a>
+                <ul class="submenu">
+                    <li><a href="#" class="nav-link" data-category="gestion-informes">Informes</a></li>
+                    <li><a href="#" class="nav-link" data-category="gestion-reuniones">Reuniones</a></li>
+                    <li><a href="#" class="nav-link" data-category="gestion-comisiones">Comisiones</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="busqueda.html" class="nav-link">
+                    <div class="nav-icon"><i class="fas fa-search"></i></div>
+                    <div class="nav-text">Búsqueda</div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="perfil.html" class="nav-link">
+                    <div class="nav-icon"><i class="fas fa-user"></i></div>
+                    <div class="nav-text">Mi perfil</div>
+                </a>
+            </li>
+        </ul>
+        
+        <div class="sidebar-footer">
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon" id="themeIcon"></i>
+                <span>Cambiar tema</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-title">Dashboard</div>
+            </div>
+            
+            <div class="header-right">
+                <button class="header-icon" id="notification-toggle">
+                    <i class="fas fa-bell"></i>
+                    <div class="notification-count" id="notification-count">3</div>
+                </button>
+                
+                <div class="notification-panel" id="notification-panel">
+                    <div class="notification-header">
+                        <div class="notification-title">Notificaciones</div>
+                        <button class="mark-all-read">Marcar todo como leído</button>
+                    </div>
+                    <div class="notification-list" id="notification-list">
+                        <!-- Notifications will be added here -->
+                    </div>
+                    <div class="notification-footer">
+                        <a href="#" class="view-all">Ver todas</a>
+                    </div>
+                </div>
+                
+                <div class="user-menu">
+                    <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="User" class="user-avatar">
+                    <div class="user-name">Dr. Juan Pérez</div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Dashboard Content -->
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Mi espacio de trabajo</h1>
+                <div class="dashboard-actions">
+                    <button class="action-btn" id="uploadBtn">
+                        <i class="fas fa-upload"></i> Subir archivo
+                    </button>
+                    <button class="action-btn" id="createFolderBtn">
+                        <i class="fas fa-folder-plus"></i> Nueva carpeta
+                    </button>
+                </div>
+            </div>
+            
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="stat-value">42</div>
+                            <div class="stat-label">Documentos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-folder"></i></div>
+                            <div class="stat-value">8</div>
+                            <div class="stat-label">Carpetas</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Subidos este mes</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-share-alt"></i></div>
+                            <div class="stat-value">5</div>
+                            <div class="stat-label">Compartidos</div>
+                        </div>
+                    </div>
+                    
+                    <div class="explorer-container">
+                        <div class="explorer-header">
+                            <div class="explorer-title">Archivos recientes</div>
+                            <div class="explorer-actions">
+                                <div class="explorer-search">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" placeholder="Buscar archivos...">
+                                </div>
+                                <button class="action-btn">
+                                    <i class="fas fa-sort"></i> Ordenar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="breadcrumb">
+                            <span>Inicio</span>
+                            <span class="separator">/</span>
+                            <span>Mis documentos</span>
+                        </div>
+                        
+                        <div class="explorer-content" id="explorer-content">
+                            <!-- Folders -->
+                            <div class="folder-item">
+                                <div class="folder-icon"><i class="fas fa-folder"></i></div>
+                                <div class="folder-details">
+                                    <div class="folder-name">Docencia</div>
+                                    <div class="file-meta">8 elementos</div>
+                                </div>
+                            </div>
+                            <div class="folder-item">
+                                <div class="folder-icon"><i class="fas fa-folder"></i></div>
+                                <div class="folder-details">
+                                    <div class="folder-name">Investigación</div>
+                                    <div class="file-meta">12 elementos</div>
+                                </div>
+                            </div>
+                            <div class="folder-item">
+                                <div class="folder-icon"><i class="fas fa-folder"></i></div>
+                                <div class="folder-details">
+                                    <div class="folder-name">Artículos</div>
+                                    <div class="file-meta">5 elementos</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Files -->
+                            <div class="file-item">
+                                <div class="file-icon"><i class="fas fa-file-pdf"></i></div>
+                                <div class="file-details">
+                                    <div class="file-name">Programa de estudio - Matemáticas avanzadas</div>
+                                    <div class="file-meta">PDF • 2.4 MB</div>
+                                </div>
+                            </div>
+                            <div class="file-item">
+                                <div class="file-icon"><i class="fas fa-file-word"></i></div>
+                                <div class="file-details">
+                                    <div class="file-name">Investigación sobre Machine Learning</div>
+                                    <div class="file-meta">DOCX • 1.8 MB</div>
+                                </div>
+                            </div>
+                            <div class="file-item">
+                                <div class="file-icon"><i class="fas fa-file-powerpoint"></i></div>
+                                <div class="file-details">
+                                    <div class="file-name">Conferencia: Inteligencia Artificial y Ética</div>
+                                    <div class="file-meta">PPTX • 5.2 MB</div>
+                                </div>
+                            </div>
+                            <div class="file-item">
+                                <div class="file-icon"><i class="fas fa-file-excel"></i></div>
+                                <div class="file-details">
+                                    <div class="file-name">Datos de investigación 2023</div>
+                                    <div class="file-meta">XLSX • 3.1 MB</div>
+                                </div>
+                            </div>
+                            <div class="file-item">
+                                <div class="file-icon"><i class="fas fa-file-image"></i></div>
+                                <div class="file-details">
+                                    <div class="file-name">Diagrama de arquitectura</div>
+                                    <div class="file-meta">PNG • 1.5 MB</div>
+                                </div>
+                            </div>
+                            <div class="file-item">
+                                <div class="file-icon"><i class="fas fa-file-alt"></i></div>
+                                <div class="file-details">
+                                    <div class="file-name">Notas de reunión departamental</div>
+                                    <div class="file-meta">TXT • 45 KB</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- File Preview Modal -->
+            <div class="file-preview" id="filePreview">
+                <div class="preview-header">
+                    <h3 id="previewTitle">Nombre del archivo</h3>
+                    <button class="close-preview" id="closePreview"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="preview-content">
+                    <img src="" alt="Preview" class="preview-img" id="previewImg">
+                </div>
+                <div class="preview-footer">
+                    <div class="preview-info" id="previewInfo">PDF • 2.4 MB • Subido el 15/01/2023</div>
+                    <div class="preview-controls">
+                        <button class="action-btn" id="downloadPreview"><i class="fas fa-download"></i> Descargar</button>
+                        <button class="action-btn" id="sharePreview"><i class="fas fa-share-alt"></i> Compartir</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Create Folder Dialog -->
+            <div class="dialog-overlay" id="createFolderDialog" style="display: none;">
+                <div class="dialog">
+                    <div class="dialog-header">
+                        <h3>Nueva carpeta</h3>
+                        <button class="close-dialog" id="closeFolderDialog"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="dialog-content">
+                        <div class="form-group">
+                            <label for="folderName">Nombre de la carpeta</label>
+                            <input type="text" id="folderName" placeholder="Mi carpeta">
+                        </div>
+                    </div>
+                    <div class="dialog-footer">
+                        <button class="cancel-btn" id="cancelFolder">Cancelar</button>
+                        <button class="create-btn" id="confirmFolder">Crear</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Share Dialog -->
+            <div class="dialog-overlay" id="shareDialog" style="display: none;">
+                <div class="dialog">
+                    <div class="dialog-header">
+                        <h3>Compartir archivo</h3>
+                        <button class="close-dialog" id="closeShareDialog"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="dialog-content">
+                        <div class="form-group">
+                            <label for="shareEmail">Correo electrónico</label>
+                            <input type="email" id="shareEmail" placeholder="usuario@ejemplo.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Permisos</label>
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="permission" value="view" checked> Solo lectura
+                                </label>
+                                <label>
+                                    <input type="radio" name="permission" value="edit"> Edición
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dialog-footer">
+                        <button class="cancel-btn" id="cancelShare">Cancelar</button>
+                        <button class="share-btn" id="confirmShare">Compartir</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Upload Progress -->
+            <div class="upload-container" id="uploadProgress" style="display: none;">
+                <div class="upload-progress">
+                    <div class="upload-file-info">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>documento.pdf</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 45%;"></div>
+                    </div>
+                    <div class="upload-percentage">45%</div>
+                </div>
+            </div>
+            
+            <script src="js/utility.js"></script>
+            <script src="js/common.js"></script>
+            <script src="js/dashboard.js"></script>
+        </body>
+        </html>
