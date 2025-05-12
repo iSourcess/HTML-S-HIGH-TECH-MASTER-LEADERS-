@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestión Académica</title>
+    <title>Búsqueda - Sistema de Gestión Académica</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/dashboard.css">
+    <link rel="stylesheet" href="styles/busqueda.css">
 </head>
 <body>
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-title">Sistema Académico</div>
-            <button class="close-sidebar"><i class="fas fa-times"></i></button>
+            <button class="close-sidebar" id="close-sidebar"><i class="fas fa-times"></i></button>
         </div>
         
         <ul class="nav-menu">
             <li class="nav-item">
-                <a href="dashboard.html" class="nav-link active">
+                <a href="dashboard.html" class="nav-link">
                     <div class="nav-icon"><i class="fas fa-home"></i></div>
                     <div class="nav-text">Inicio</div>
                 </a>
@@ -96,7 +96,7 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a href="busqueda.html" class="nav-link">
+                <a href="busqueda.html" class="nav-link active">
                     <div class="nav-icon"><i class="fas fa-search"></i></div>
                     <div class="nav-text">Búsqueda</div>
                 </a>
@@ -125,7 +125,7 @@
                 <button class="menu-toggle" id="menuToggle">
                     <i class="fas fa-bars"></i>
                 </button>
-                <div class="header-title">Dashboard</div>
+                <div class="header-title">Búsqueda</div>
             </div>
             
             <div class="header-right">
@@ -140,124 +140,156 @@
                         <button class="mark-all-read">Marcar todo como leído</button>
                     </div>
                     <div class="notification-list" id="notification-list">
-                        <!-- Las notificaciones na añadiran aqui -->
+                        <!-- Notifications will be added here -->
                     </div>
                     <div class="notification-footer">
                         <a href="#" class="view-all">Ver todas</a>
                     </div>
                 </div>
                 
-                <div class="user-menu">`
-                    
+                <div class="user-menu">
                     <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="User" class="user-avatar">
                     <div class="user-name">Dr. Juan Pérez</div>
                 </div>
             </div>
         </header>
         
-        <!-- Dashboard Content -->
-        <div class="dashboard-container">
-            <div class="dashboard-header">
-                <h1 class="dashboard-title">Mi espacio de trabajo</h1>
-                <div class="dashboard-actions">
-                    <button class="action-btn" id="refreshBtn">
-                        <i class="fas fa-sync-alt"></i> Convertir a PDF
-                    </button>
-                    <button class="action-btn" id="uploadBtn">
-                        <i class="fas fa-upload"></i> Subir archivo
-                    </button>
-                    <button class="action-btn" id="createFolderBtn">
-                        <i class="fas fa-folder-plus"></i> Nueva carpeta
-                    </button>
+        <!-- Search Content -->
+        <div class="search-container">
+            <div class="search-header">
+                <h1 class="search-title">Búsqueda de documentos</h1>
+            </div>
+            
+            <form class="search-form" id="search-form">
+                <div class="search-input-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" id="search-input" placeholder="Buscar por título, autor, contenido...">
+                </div>
+                <button type="submit" class="search-button">Buscar</button>
+            </form>
+            
+            <div class="filter-container">
+                <div class="filter-group">
+                    <div class="filter-label">Categoría:</div>
+                    <select class="filter-select" id="filter-category">
+                        <option value="all">Todas</option>
+                        <option value="docencia">Docencia</option>
+                        <option value="investigacion">Investigación</option>
+                        <option value="extension">Extensión</option>
+                        <option value="articulos">Artículos</option>
+                        <option value="tutorias">Tutorías</option>
+                        <option value="gestion">Gestión</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-label">Tipo de documento:</div>
+                    <select class="filter-select" id="filter-type">
+                        <option value="all">Todos</option>
+                        <option value="pdf">PDF</option>
+                        <option value="doc">Word</option>
+                        <option value="ppt">PowerPoint</option>
+                        <option value="xls">Excel</option>
+                        <option value="txt">Texto</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <div class="filter-label">Año:</div>
+                    <select class="filter-select" id="filter-year">
+                        <option value="all">Todos</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                        <option value="2019">2019</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-label">Autor:</div>
+                    <select class="filter-select" id="filter-author">
+                        <option value="all">Todos</option>
+                        <option value="user">Mis documentos</option>
+                        <option value="shared">Compartidos conmigo</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <div class="filter-label">Ordenar por:</div>
+                    <select class="filter-select" id="filter-sort">
+                        <option value="newest">Más recientes</option>
+                        <option value="oldest">Más antiguos</option>
+                        <option value="name-asc">Nombre (A-Z)</option>
+                        <option value="name-desc">Nombre (Z-A)</option>
+                    </select>
                 </div>
             </div>
             
-            <div class="dashboard-stats">
-                <div class="stat-card">
-                    <div class="stat-icon"><i class
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
-                            <div class="stat-value">42</div>
-                            <div class="stat-label">Documentos</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="fas fa-folder"></i></div>
-                            <div class="stat-value">8</div>
-                            <div class="stat-label">Carpetas</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                            <div class="stat-value">12</div>
-                            <div class="stat-label">Subidos este mes</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="fas fa-share-alt"></i></div>
-                            <div class="stat-value">5</div>
-                            <div class="stat-label">Compartidos</div>
-                        </div>
+            <div class="file-list-container" id="search-results">
+                <!-- Search results will be added here -->
+                <div class="file-card">
+                    <div class="file-title">Programa de estudio - Matemáticas avanzadas</div>
+                    <div class="file-subtitle">Departamento de Matemáticas</div>
+                    <div class="file-date">Actualizado: 15/01/2023</div>
+                    <div class="file-category">Categoría: Docencia</div>
+                    <div class="file-content">
+                        Este documento contiene el programa de estudio para el curso de Matemáticas Avanzadas del semestre 2023A, incluyendo objetivos, temario, metodología, evaluación y bibliografía.
                     </div>
-                    
-                    <div class="explorer-container">
-                        <div class="explorer-header">
-                            <div class="explorer-title">Archivos recientes</div>
-                            <div class="explorer-actions">
-                                <div class="explorer-search">
-                                    <i class="fas fa-search"></i>
-                                    <input type="text" placeholder="Buscar archivos...">
-                                </div>
-                                <button class="action-btn">
-                                    <i class="fas fa-sort"></i> Ordenar
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="breadcrumb">
-                            <span>Inicio</span>
-                            <span class="separator">/</span>
-                            <span>Mis documentos</span>
-                        </div>
-                        <div class="explorer-content" id="explorer-content">
-                        </div>
+                    <div class="file-actions">
+                        <button class="view-button" data-id="1"><i class="fas fa-eye"></i> Ver</button>
+                        <button class="download-button" data-id="1"><i class="fas fa-download"></i> Descargar</button>
+                    </div>
+                </div>
+                
+                <div class="file-card">
+                    <div class="file-title">Investigación sobre Machine Learning</div>
+                    <div class="file-subtitle">Grupo de Investigación en IA</div>
+                    <div class="file-date">Actualizado: 10/12/2022</div>
+                    <div class="file-category">Categoría: Investigación</div>
+                    <div class="file-content">
+                        Documento de investigación sobre aplicaciones de Machine Learning en el procesamiento de lenguaje natural, con énfasis en modelos transformers y su aplicación en el análisis de textos académicos.
+                    </div>
+                    <div class="file-actions">
+                        <button class="view-button" data-id="2"><i class="fas fa-eye"></i> Ver</button>
+                        <button class="download-button" data-id="2"><i class="fas fa-download"></i> Descargar</button>
+                    </div>
+                </div>
+                
+                <div class="file-card">
+                    <div class="file-title">Conferencia: Inteligencia Artificial y Ética</div>
+                    <div class="file-subtitle">Semana de la Ciencia 2023</div>
+                    <div class="file-date">Actualizado: 05/03/2023</div>
+                    <div class="file-category">Categoría: Extensión</div>
+                    <div class="file-content">
+                        Presentación para la conferencia sobre los dilemas éticos en el desarrollo y aplicación de sistemas de Inteligencia Artificial, con casos de estudio y recomendaciones para un desarrollo responsable.
+                    </div>
+                    <div class="file-actions">
+                        <button class="view-button" data-id="3"><i class="fas fa-eye"></i> Ver</button>
+                        <button class="download-button" data-id="3"><i class="fas fa-download"></i> Descargar</button>
                     </div>
                 </div>
             </div>
-            
-            <!-- Create Folder Dialog -->
-            <div class="dialog-overlay" id="createFolderDialog" style="display: none;">
-                <div class="dialog">
-                    <div class="dialog-header">
-                        <h3>Nueva carpeta</h3>
-                        <button class="close-dialog" id="closeFolderDialog"><i class="fas fa-times"></i></button>
-                    </div>
-                    <div class="dialog-content">
-                        <div class="form-group">
-                            <label for="folderName">Nombre de la carpeta</label>
-                            <input type="text" id="folderName" placeholder="Mi carpeta">
-                        </div>
-                    </div>
-                    <div class="dialog-footer">
-                        <button class="cancel-btn" id="cancelFolder">Cancelar</button>
-                        <button class="create-btn" id="confirmFolder">Crear</button>
-                    </div>
-                </div>
+        </div>
+    </div>
+    
+    <!-- File Viewer -->
+    <div class="file-viewer" id="file-viewer">
+        <div class="viewer-header">
+            <h3 class="viewer-title" id="viewer-title">Nombre del documento</h3>
+            <div class="viewer-actions">
+                <button class="viewer-button" id="download-btn"><i class="fas fa-download"></i></button>
+                <button class="viewer-button" id="close-viewer"><i class="fas fa-times"></i></button>
             </div>
-            
-            <!-- Upload Progress -->
-            <div class="upload-container" id="uploadProgress" style="display: none;">
-                <div class="upload-progress">
-                    <div class="upload-file-info">
-                        <i class="fas fa-file-pdf"></i>
-                        <span>documento.pdf</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 45%;"></div>
-                    </div>
-                    <div class="upload-percentage">45%</div>
-                </div>
-            </div>
-            
-            <script src="js/utility.js"></script>
-            <script src="js/common.js"></script>
-            <script src="js/dashboard.js"></script>
-        </body>
-        </html>
+        </div>
+        <div class="viewer-content">
+            <iframe id="pdf-frame" class="pdf-frame" src=""></iframe>
+        </div>
+    </div>
+    
+    <script src="js/common.js"></script>
+    <script src="js/fileManager.js"></script>
+    <script src="js/fileCard.js"></script>
+    <script src="js/busqueda.js"></script>
+</body>
+</html>

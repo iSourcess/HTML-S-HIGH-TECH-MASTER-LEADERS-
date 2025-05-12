@@ -1,10 +1,44 @@
 /* Dashboard specific styles */
 
 .dashboard-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
     padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Estilos para la conversión de PDF */
+#fileInfoContainer {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.file-info {
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.conversion-result {
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.conversion-result.success {
+    background-color: var(--success-bg);
+    color: var(--success-text);
+}
+
+.conversion-result.error {
+    background-color: var(--error-bg);
+    color: var(--error-text);
+}
+
+.hidden {
+    display: none;
 }
 
 .dashboard-header {
@@ -36,7 +70,7 @@
     background-color: var(--card-bg);
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px var(--shadow-color);
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -68,7 +102,7 @@
     flex-direction: column;
     background-color: var(--card-bg);
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px var(--shadow-color);
     overflow: hidden;
 }
 
@@ -481,13 +515,49 @@
     overflow: hidden;
 }
 
-.menu-item {
+.sidebar .menu-item {
+    position: relative;
     padding: 10px 15px;
     display: flex;
     align-items: center;
     gap: 10px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s ease;
+}
+
+.sidebar .menu-item.menu-hover {
+    background-color: var(--hover-color);
+}
+
+.submenu-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.submenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.submenu.open {
+    max-height: 500px;
+    transition: max-height 0.5s ease-in;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 250px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
 }
 
 .menu-item:hover {
@@ -495,6 +565,63 @@
 }
 
 .menu-item i {
+    width: 20px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+/* Adding new styles for explorer action buttons and context menu */
+.explorer-actions .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 12px;
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.explorer-actions .action-btn i {
+    margin-right: 5px;
+}
+
+.explorer-actions .action-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.explorer-actions .action-btn:active {
+    transform: scale(0.95);
+}
+
+.context-menu {
+    position: fixed;
+    background-color: var(--card-bg);
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1100;
+    overflow: hidden;
+    min-width: 200px;
+    border: 1px solid var(--border-color);
+}
+
+.context-menu .context-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    color: var(--text-color);
+}
+
+.context-menu .context-menu-item:hover {
+    background-color: var(--hover-color);
+}
+
+.context-menu .context-menu-icon {
     width: 20px;
     text-align: center;
     color: var(--text-secondary);

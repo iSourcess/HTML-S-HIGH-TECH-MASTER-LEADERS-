@@ -1,3 +1,6 @@
+import { auth } from './firebase-config.js';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('registrationForm');
     const progress = document.getElementById('formProgress');
@@ -70,20 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Habilitar botón solo si todos los campos están llenos y las contraseñas coinciden
         submitBtn.disabled = percentage !== 100 || !passwordsMatch;
-    }
-
-    document.getElementById("registrationForm").addEventListener("submit", function(event) {
-        const checkboxes = document.querySelectorAll("input[name='tipoProfesor']:checked");
-        const errorElement = document.getElementById("tipoProfesorError");
-        
-        if (checkboxes.length === 0) {
-            errorElement.style.display = "block";
-            event.preventDefault(); // Evitar el envío del formulario
-        } else {
-            errorElement.style.display = "none";
-        }
-    });
-    
+    }    
 
     // Validación en tiempo real de los campos
     form.addEventListener('input', function(e) {
@@ -125,29 +115,34 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
 
         try {
-            const response = await fetch('/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: document.getElementById('nombre').value,
-                    lastname: document.getElementById('apellidos').value,
-                    email: document.getElementById('email').value,
-                    password: document.getElementById('password').value
-                })
-            });
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
-            const data = await response.json();
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
 
-            if (response.ok) {
-                alert('Registro exitoso! Por favor, inicia sesión.');
-                window.location.href = 'index.html';
-            } else {
-                alert(data.error || 'Error en el registro');
-            }
+            // Aquí puedes agregar lógica adicional para guardar el nombre y apellidos
+            // en una base de datos o en el perfil del usuario
+
+            alert('Registro exitoso! Por favor, inicia sesión.');
+            window.location.href = 'index.html';
         } catch (error) {
-            alert('Error al conectar con el servidor');
+            let errorMessage = 'Error en el registro';
+            switch (error.code) {
+                case 'auth/email-already-in-use':
+                    errorMessage = 'Este correo electrónico ya está registrado';
+                    break;
+                case 'auth/invalid-email':
+                    errorMessage = 'Correo electrónico inválido';
+                    break;
+                case 'auth/operation-not-allowed':
+                    errorMessage = 'El registro con correo y contraseña no está habilitado';
+                    break;
+                case 'auth/weak-password':
+                    errorMessage = 'La contraseña es demasiado débil';
+                    break;
+            }
+            alert(errorMessage);
         }
     });
 });
