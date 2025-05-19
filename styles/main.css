@@ -23,7 +23,7 @@
     --bg-color: #f8f9fa;
     --card-bg: #ffffff;
     --text-color: #212529;
-    --text-muted: #6c757d;
+    --text-muted: #7d6c6c;
     --border-color: #dee2e6;
     
     --sidebar-width: 280px;
@@ -47,18 +47,23 @@ body.dark-theme {
     --primary-color: #4a6fdc;
     --primary-light: #2a3a5c;
     --primary-dark: #3a5bb9;
-    
+
     --bg-color: #121212;
     --card-bg: #1e1e1e;
     --text-color: #e0e0e0;
     --text-muted: #a0a0a0;
+    --text-secondary: #bbbbbb; /* 👈 Añadido para mejor contraste en modo oscuro */
     --border-color: #333333;
-    
+
     --sidebar-bg: #1e1e1e;
     --sidebar-text: #e0e0e0;
     --sidebar-active: #4a6fdc;
     --sidebar-hover: #2a2a2a;
+    /*CAMBIOS REALIZADOS EN CLASE*/
+    --input-bg: #1a1a1a;
+    --border-color: #444444;
 }
+
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

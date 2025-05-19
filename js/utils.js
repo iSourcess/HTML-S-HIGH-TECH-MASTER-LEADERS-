@@ -68,32 +68,9 @@ function getFileIcon(fileType) {
 }
 
 // Theme management
-function toggleTheme() {
-    const body = document.body;
-    const isDarkMode = body.classList.toggle('dark-theme');
-    
-    // Save preference
-    localStorage.setItem('darkMode', isDarkMode);
-    
-    // Update icon
-    const themeIcon = document.getElementById('themeIcon');
-    if (themeIcon) {
-        themeIcon.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
-    }
-}
+// Theme functionality moved to dashboard.js
 
-function applyTheme() {
-    const isDarkMode = localStorage.getItem('darkMode') === 'true';
-    
-    if (isDarkMode) {
-        document.body.classList.add('dark-theme');
-        
-        const themeIcon = document.getElementById('themeIcon');
-        if (themeIcon) {
-            themeIcon.className = 'fas fa-sun';
-        }
-    }
-}
+// Theme functionality moved to dashboard.js
 
 // Generate a unique ID
 function generateUniqueId() {

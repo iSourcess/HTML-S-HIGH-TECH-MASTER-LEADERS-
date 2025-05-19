@@ -251,3 +251,7 @@ function openFileViewer(fileId, fileName) {
         fileViewer.style.display = 'flex';
     }
 }
+
+if (!token || !user) {
+    window.location.href = 'index.html';
+}

@@ -2,17 +2,6 @@
  * Common functionality for all pages
  */
 
-document.addEventListener('DOMContentLoaded', function() {
-    initializeSidebar();
-    initializeThemeToggle();
-    
-    // Initialize notifications
-    initializeNotifications();
-    
-    // Initialize user menu
-    initializeUserMenu();
-});
-
 function initializeSidebar() {
     // Menu toggle for mobile
     const menuToggle = document.getElementById('menuToggle');
@@ -103,15 +92,11 @@ function initializeThemeToggle() {
     }
 }
 
-/**
- * Common functionality for the Sistema de Gestión Académica
- */
-
+// Initialize all functionality when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize notifications
+    initializeSidebar();
+    initializeThemeToggle();
     initializeNotifications();
-    
-    // Initialize user menu
     initializeUserMenu();
 });
 

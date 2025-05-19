@@ -92,6 +92,7 @@
     border: 1px solid var(--border-color);
     background-color: var(--input-bg);
     color: var(--text-color);
+    
 }
 
 .filter-select:focus {

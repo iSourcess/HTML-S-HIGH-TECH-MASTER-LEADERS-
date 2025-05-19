@@ -147,12 +147,16 @@
                     </div>
                 </div>
                 
-                <div class="user-menu">`
-                    
-                    <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="User" class="user-avatar">
-                    <div class="user-name">Dr. Juan Pérez</div>
+            <div class="user-menu" id="userMenu">
+                <button id="userButton" class="user-name">👤 Usuario</button>
+                <div class="user-dropdown" id="userDropdown" style="display: none;">
+                    <div id="userDisplayName">Nombre Apellido</div>
+                    <a href="perfil.html">Mi perfil</a>
+                    <button id="logoutBtn">Cerrar sesión</button>
                 </div>
             </div>
+            </div>
+
         </header>
         
         <!-- Dashboard Content -->
@@ -172,44 +176,42 @@
                 </div>
             </div>
             
-            <div class="dashboard-stats">
+            <div class="dashboard-stats" id="dashboard-stats">
                 <div class="stat-card">
-                    <div class="stat-icon"><i class
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
-                            <div class="stat-value">42</div>
-                            <div class="stat-label">Documentos</div>
+                    <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+                    <div class="stat-value" id="documents-count">12</div>
+                    <div class="stat-label">Documentos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-folder"></i></div>
+                    <div class="stat-value" id="folders-count">6</div>
+                    <div class="stat-label">Carpetas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <div class="stat-value" id="monthly-uploads">3</div>
+                    <div class="stat-label">Subidos este mes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-share-alt"></i></div>
+                    <div class="stat-value" id="shared-count">--</div>
+                    <div class="stat-label">Compartidos</div>
+                </div>
+            </div>
+            
+            <div class="explorer-container">
+                <div class="explorer-header">
+                    <div class="explorer-title">Archivos recientes</div>
+                    <div class="explorer-actions">
+                        <div class="explorer-search">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="file-search" placeholder="Buscar archivos..." onkeyup="searchFiles()">
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="fas fa-folder"></i></div>
-                            <div class="stat-value">8</div>
-                            <div class="stat-label">Carpetas</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                            <div class="stat-value">12</div>
-                            <div class="stat-label">Subidos este mes</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="fas fa-share-alt"></i></div>
-                            <div class="stat-value">5</div>
-                            <div class="stat-label">Compartidos</div>
-                        </div>
+                        <button class="action-btn" onclick="toggleSort()">
+                            <i class="fas fa-sort"></i> Ordenar
+                        </button>
                     </div>
-                    
-                    <div class="explorer-container">
-                        <div class="explorer-header">
-                            <div class="explorer-title">Archivos recientes</div>
-                            <div class="explorer-actions">
-                                <div class="explorer-search">
-                                    <i class="fas fa-search"></i>
-                                    <input type="text" placeholder="Buscar archivos...">
-                                </div>
-                                <button class="action-btn">
-                                    <i class="fas fa-sort"></i> Ordenar
-                                </button>
-                            </div>
-                        </div>
+                </div>
                         
                         <div class="breadcrumb">
                             <span>Inicio</span>

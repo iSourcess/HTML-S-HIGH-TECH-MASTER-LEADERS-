@@ -159,61 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
         DOM.sidebar.classList.toggle('open');
     });
 
-    // Convertir a PDF
-    const refreshBtn = document.getElementById('refreshBtn');
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.txt,.doc,.docx,.xls,.xlsx';
-    fileInput.style.display = 'none';
-    document.body.appendChild(fileInput);
-
-    refreshBtn.addEventListener('click', () => {
-        fileInput.click();
-    });
-
-    fileInput.addEventListener('change', async (e) => {
-        if (!e.target.files.length) return;
-
-        const file = e.target.files[0];
-        const fileType = file.name.split('.').pop().toLowerCase();
-
-        // Crear FormData y agregar el archivo
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('fileType', fileType);
-
-        try {
-            showNotification('Convirtiendo archivo...', 'info');
-
-            const response = await fetch('http://localhost:5000/api/convert-to-pdf', {
-                method: 'POST',
-                body: formData
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                // Crear un enlace temporal para descargar el PDF
-                const downloadLink = document.createElement('a');
-                downloadLink.href = data.pdfUrl;
-                downloadLink.download = data.filename;
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
-                document.body.removeChild(downloadLink);
-
-                showNotification('Archivo convertido exitosamente', 'success');
-            } else {
-                throw new Error(data.error || 'Error al convertir el archivo');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            showNotification(error.message || 'Error al convertir el archivo', 'error');
-        }
-
-        // Limpiar el input
-        fileInput.value = '';
-    });
-
     DOM.closeSidebar.addEventListener('click', () => {
         DOM.sidebar.classList.remove('open');
     });
@@ -390,19 +335,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            // Usar eventos delegados para evitar múltiples listeners
-            itemElement.dataset.itemName = item.name;
-            itemElement.dataset.itemType = item.type;
+            // Agregar eventos de arrastrar y soltar
             if (item.type === 'file') {
-                itemElement.dataset.extension = item.extension;
-                itemElement.dataset.size = item.size;
+                itemElement.setAttribute('draggable', true);
+                itemElement.addEventListener('dragstart', (e) => this.handleDragStart(e, item));
             }
 
-            // Remove previous action buttons and add context menu
-            itemElement.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                this.showContextMenu(e, item);
-            });
+            if (item.type === 'folder') {
+                itemElement.addEventListener('dragover', (e) => this.handleDragOver(e));
+                itemElement.addEventListener('drop', (e) => this.handleDrop(e, item));
+            }
 
             itemElement.addEventListener('click', () => this.handleItemClick(item));
             return itemElement;
@@ -702,37 +644,37 @@ document.addEventListener('DOMContentLoaded', () => {
         { 
             name: 'Docencia', 
             type: 'folder', 
-            fileCount: 3, 
+            fileCount: 2, 
             createdAt: DATES.jan10
         },
         { 
             name: 'Investigación', 
             type: 'folder', 
-            fileCount: 3, 
+            fileCount: 2, 
             createdAt: DATES.feb15
         },
         { 
             name: 'Extensión', 
             type: 'folder', 
-            fileCount: 3, 
+            fileCount: 2, 
             createdAt: DATES.feb15
         },
         { 
             name: 'Artículos Científicos', 
             type: 'folder', 
-            fileCount: 3, 
+            fileCount: 2, 
             createdAt: DATES.feb15
         },
         { 
             name: 'Tutorías', 
             type: 'folder', 
-            fileCount: 3, 
+            fileCount: 2, 
             createdAt: DATES.feb15
         },
         {
             name: 'Gestión',
             type: 'folder',
-            fileCount: 3,
+            fileCount: 2,
             createdAt: DATES.feb15,
         }
     ];
@@ -800,31 +742,491 @@ document.addEventListener('DOMContentLoaded', () => {
         fileInput.addEventListener('change', handleFileUpload);
         fileInput.click();
     });
+    
+    // Primero necesitamos cargar la biblioteca jsPDF desde CDN
+function loadJsPDF() {
+    return new Promise((resolve, reject) => {
+        // Verificar si jsPDF ya está cargado
+        if (window.jspdf && window.jspdf.jsPDF) {
+            resolve(window.jspdf.jsPDF);
+            return;
+        }
 
+        // Cargar el script de jsPDF
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        script.onload = () => resolve(window.jspdf.jsPDF);
+        script.onerror = () => reject(new Error('No se pudo cargar jsPDF'));
+        document.head.appendChild(script);
+    });
+}
+
+// También necesitamos html2canvas para capturar contenido HTML
+function loadHtml2Canvas() {
+    return new Promise((resolve, reject) => {
+        // Verificar si html2canvas ya está cargado
+        if (window.html2canvas) {
+            resolve(window.html2canvas);
+            return;
+        }
+
+        // Cargar el script de html2canvas
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        script.onload = () => resolve(window.html2canvas);
+        script.onerror = () => reject(new Error('No se pudo cargar html2canvas'));
+        document.head.appendChild(script);
+    });
+}
+
+    // Clase principal para el convertidor a PDF
+    class PDFConverter {
+        constructor() {
+            this.selectedFiles = [];
+            this.jsPDF = null;
+            this.html2canvas = null;
+            this.init();
+        }
+
+        async init() {
+            try {
+                // Cargar las bibliotecas necesarias
+                this.jsPDF = await loadJsPDF();
+                this.html2canvas = await loadHtml2Canvas();
+                
+                // Inicializar los botones
+                this.initButtons();
+                
+                console.log('PDF Converter inicializado correctamente');
+            } catch (error) {
+                console.error('Error al inicializar PDF Converter:', error);
+                this.showNotification('Error al cargar las herramientas de conversión', 'error');
+            }
+        }
+
+        initButtons() {
+            // Botón de Convertir a PDF
+            const convertBtn = document.getElementById('refreshBtn'); // Usando el botón existente
+            if (convertBtn) {
+                convertBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Convertir a PDF';
+                convertBtn.addEventListener('click', () => this.showConvertDialog());
+            }
+
+            // Agregar funcionalidad para seleccionar archivos
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.file-item')) {
+                    const fileItem = e.target.closest('.file-item');
+                    this.toggleFileSelection(fileItem);
+                }
+            });
+        }
+
+        toggleFileSelection(fileItem) {
+            const fileId = fileItem.dataset.id;
+            const fileName = fileItem.querySelector('.file-name').textContent;
+            
+            if (fileItem.classList.contains('selected')) {
+                fileItem.classList.remove('selected');
+                this.selectedFiles = this.selectedFiles.filter(file => file.id !== fileId);
+            } else {
+                fileItem.classList.add('selected');
+                this.selectedFiles.push({
+                    id: fileId,
+                    name: fileName,
+                    element: fileItem
+                });
+            }
+        }
+
+        showConvertDialog() {
+            // Si no hay archivos seleccionados, mostrar mensaje
+            if (this.selectedFiles.length === 0) {
+                // Verificar si hay algún archivo en el explorador
+                const files = document.querySelectorAll('.file-item:not(.folder-item)');
+                
+                if (files.length === 0) {
+                    this.showNotification('No hay archivos disponibles para convertir', 'warning');
+                    return;
+                } else {
+                    this.showNotification('Seleccione al menos un archivo para convertir', 'info');
+                    return;
+                }
+            }
+
+            // Crear y mostrar el diálogo
+            const dialogHTML = `
+                <div class="dialog-overlay" id="convertDialog">
+                    <div class="dialog">
+                        <div class="dialog-header">
+                            <h3>Convertir a PDF</h3>
+                            <button class="close-dialog" id="closeConvertDialog"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="dialog-content">
+                            <p>Se convertirán ${this.selectedFiles.length} archivo(s) a formato PDF.</p>
+                            <div class="selected-files-list">
+                                ${this.selectedFiles.map(file => `
+                                    <div class="selected-file">
+                                        <i class="fas fa-file"></i>
+                                        <span>${file.name}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="form-group">
+                                <label for="pdfFileName">Nombre del archivo PDF resultante</label>
+                                <input type="text" id="pdfFileName" placeholder="documento_convertido" value="documento_convertido">
+                            </div>
+                        </div>
+                        <div class="dialog-footer">
+                            <button class="cancel-btn" id="cancelConvert">Cancelar</button>
+                            <button class="create-btn" id="confirmConvert">Convertir</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Insertar el diálogo en el DOM
+            const dialogContainer = document.createElement('div');
+            dialogContainer.innerHTML = dialogHTML;
+            document.body.appendChild(dialogContainer.firstElementChild);
+
+            // Configurar eventos
+            document.getElementById('closeConvertDialog').addEventListener('click', () => this.closeConvertDialog());
+            document.getElementById('cancelConvert').addEventListener('click', () => this.closeConvertDialog());
+            document.getElementById('confirmConvert').addEventListener('click', () => this.convertToPDF());
+        }
+
+        closeConvertDialog() {
+            const dialog = document.getElementById('convertDialog');
+            if (dialog) {
+                dialog.remove();
+            }
+        }
+
+        async convertToPDF() {
+            // Obtener el nombre del archivo
+            const pdfFileName = document.getElementById('pdfFileName').value || 'documento_convertido';
+            
+            try {
+                // Mostrar progreso
+                this.showProgressBar();
+                
+                // Crear un nuevo documento PDF
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                let currentPage = 1;
+                
+                // Convertir cada archivo seleccionado
+                for (let i = 0; i < this.selectedFiles.length; i++) {
+                    const file = this.selectedFiles[i];
+                    
+                    // Actualizar la barra de progreso
+                    this.updateProgress((i / this.selectedFiles.length) * 100);
+                    
+                    // Para esta demo, simulamos contenido diferente según el tipo de archivo
+                    // En una implementación real, se procesaría el archivo según su formato
+                    const fileElement = file.element;
+                    const fileType = this.getFileType(file.name);
+                    
+                    if (i > 0) {
+                        pdf.addPage();
+                        currentPage++;
+                    }
+
+                    // Agregar encabezado con el nombre del archivo
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.setFontSize(16);
+                    pdf.text(file.name, 20, 20);
+                    
+                    // Agregar contenido según el tipo de archivo
+                    pdf.setFont('helvetica', 'normal');
+                    pdf.setFontSize(12);
+                    
+                    if (fileType === 'txt' || fileType === 'doc' || fileType === 'docx') {
+                        // Simular texto para documentos de texto
+                        pdf.text('Contenido del documento: ' + file.name, 20, 30);
+                        
+                        // Simular párrafos
+                        let yPos = 40;
+                        for (let p = 0; p < 5; p++) {
+                            pdf.text('Párrafo ' + (p + 1) + ': Este es un texto de ejemplo para el documento ' + file.name, 20, yPos);
+                            yPos += 10;
+                        }
+                    } else if (fileType === 'jpg' || fileType === 'png' || fileType === 'jpeg') {
+                        // Para imágenes, podríamos capturar el elemento y convertirlo
+                        pdf.text('Imagen: ' + file.name, 20, 30);
+                        
+                        // En un caso real, se cargaría la imagen y se agregaría al PDF
+                        pdf.text('(Contenido de imagen convertido a PDF)', 20, 40);
+                    } else {
+                        // Para otros tipos de archivos
+                        pdf.text('Archivo: ' + file.name, 20, 30);
+                        pdf.text('Tipo: ' + fileType, 20, 40);
+                        pdf.text('(Contenido convertido a PDF)', 20, 50);
+                    }
+                    
+                    // Agregar número de página
+                    pdf.setFontSize(10);
+                    pdf.text('Página ' + currentPage, pdf.internal.pageSize.getWidth() - 40, pdf.internal.pageSize.getHeight() - 10);
+                }
+                
+                // Actualizar la barra de progreso al 100%
+                this.updateProgress(100);
+                
+                // Guardar el PDF
+                setTimeout(() => {
+                    pdf.save(pdfFileName + '.pdf');
+                    
+                    // Mostrar notificación de éxito
+                    this.hideProgressBar();
+                    this.showNotification('Conversión a PDF completada con éxito', 'success');
+                    
+                    // Cerrar el diálogo
+                    this.closeConvertDialog();
+                    
+                    // Deseleccionar los archivos
+                    this.deselectAllFiles();
+                }, 500);
+                
+            } catch (error) {
+                console.error('Error al convertir a PDF:', error);
+                this.hideProgressBar();
+                this.showNotification('Error al convertir a PDF', 'error');
+            }
+        }
+
+        showProgressBar() {
+            // Crear la barra de progreso si no existe
+            if (!document.getElementById('pdfConversionProgress')) {
+                const progressHTML = `
+                    <div class="upload-container" id="pdfConversionProgress">
+                        <div class="upload-progress">
+                            <div class="upload-file-info">
+                                <i class="fas fa-file-pdf"></i>
+                                <span>Convirtiendo a PDF...</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="pdfProgressFill" style="width: 0%;"></div>
+                            </div>
+                            <div class="upload-percentage" id="pdfProgressPercentage">0%</div>
+                        </div>
+                    </div>
+                `;
+                
+                const progressContainer = document.createElement('div');
+                progressContainer.innerHTML = progressHTML;
+                document.body.appendChild(progressContainer.firstElementChild);
+            }
+            
+            // Mostrar la barra de progreso
+            document.getElementById('pdfConversionProgress').style.display = 'block';
+        }
+
+        updateProgress(percentage) {
+            const fill = document.getElementById('pdfProgressFill');
+            const text = document.getElementById('pdfProgressPercentage');
+            
+            if (fill && text) {
+                const roundedPercentage = Math.round(percentage);
+                fill.style.width = roundedPercentage + '%';
+                text.textContent = roundedPercentage + '%';
+            }
+        }
+
+        hideProgressBar() {
+            const progressBar = document.getElementById('pdfConversionProgress');
+            if (progressBar) {
+                setTimeout(() => {
+                    progressBar.remove();
+                }, 1000);
+            }
+        }
+
+        showNotification(message, type = 'info') {
+            // Crear un sistema de notificaciones si no existe en la aplicación
+            if (!document.getElementById('notification-system')) {
+                const notifContainer = document.createElement('div');
+                notifContainer.id = 'notification-system';
+                notifContainer.style.position = 'fixed';
+                notifContainer.style.top = '20px';
+                notifContainer.style.right = '20px';
+                notifContainer.style.zIndex = '9999';
+                document.body.appendChild(notifContainer);
+            }
+            
+            // Crear la notificación
+            const notif = document.createElement('div');
+            notif.className = `notification notification-${type}`;
+            notif.innerHTML = `
+                <div class="notification-icon">
+                    <i class="fas ${this.getIconForType(type)}"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-message">${message}</div>
+                </div>
+                <button class="notification-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            // Estilar la notificación
+            notif.style.display = 'flex';
+            notif.style.alignItems = 'center';
+            notif.style.backgroundColor = this.getColorForType(type);
+            notif.style.color = '#fff';
+            notif.style.borderRadius = '5px';
+            notif.style.padding = '10px 15px';
+            notif.style.marginBottom = '10px';
+            notif.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+            notif.style.transition = 'all 0.3s ease';
+            notif.style.opacity = '0';
+            
+            // Agregar la notificación al contenedor
+            document.getElementById('notification-system').appendChild(notif);
+            
+            // Mostrar la notificación con una animación
+            setTimeout(() => {
+                notif.style.opacity = '1';
+            }, 10);
+            
+            // Configurar el botón de cierre
+            notif.querySelector('.notification-close').addEventListener('click', () => {
+                notif.style.opacity = '0';
+                setTimeout(() => {
+                    notif.remove();
+                }, 300);
+            });
+            
+            // Auto-eliminar después de 5 segundos
+            setTimeout(() => {
+                notif.style.opacity = '0';
+                setTimeout(() => {
+                    notif.remove();
+                }, 300);
+            }, 5000);
+        }
+
+        getIconForType(type) {
+            switch (type) {
+                case 'success': return 'fa-check-circle';
+                case 'error': return 'fa-exclamation-circle';
+                case 'warning': return 'fa-exclamation-triangle';
+                case 'info': 
+                default: return 'fa-info-circle';
+            }
+        }
+
+        getColorForType(type) {
+            switch (type) {
+                case 'success': return '#28a745';
+                case 'error': return '#dc3545';
+                case 'warning': return '#ffc107';
+                case 'info': 
+                default: return '#17a2b8';
+            }
+        }
+
+        getFileType(fileName) {
+            const extension = fileName.split('.').pop().toLowerCase();
+            return extension || 'unknown';
+        }
+
+        deselectAllFiles() {
+            this.selectedFiles.forEach(file => {
+                if (file.element) {
+                    file.element.classList.remove('selected');
+                }
+            });
+            this.selectedFiles = [];
+        }
+    }
+
+    // Iniciar el convertidor cuando la página esté lista
+    document.addEventListener('DOMContentLoaded', () => {
+        window.pdfConverter = new PDFConverter();
+        
+        // Agregar estilos CSS para la funcionalidad de conversión a PDF
+        const style = document.createElement('style');
+        style.textContent = `
+            .file-item.selected {
+                background-color: rgba(0, 123, 255, 0.1);
+                border: 1px solid #007bff;
+            }
+            
+            .selected-files-list {
+                max-height: 200px;
+                overflow-y: auto;
+                margin: 15px 0;
+                border: 1px solid #eee;
+                border-radius: 5px;
+                padding: 10px;
+            }
+            
+            .selected-file {
+                display: flex;
+                align-items: center;
+                padding: 5px 0;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            
+            .selected-file:last-child {
+                border-bottom: none;
+            }
+            
+            .selected-file i {
+                margin-right: 10px;
+                color: #666;
+            }
+            
+            #notification-system {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+            }
+        `;
+        document.head.appendChild(style);
+    });
+
+    // Función para manejar la carga de archivos
     function handleFileUpload(event) {
         const files = event.target.files;
-        if (files.length > 0) {
-            DOM.uploadProgress.style.display = 'block';
+        if (files.length === 0) return;
+        
+        // Mostrar indicador de progreso
+        DOM.uploadProgress.style.display = 'block';
+        
+        // Simular progreso de carga (en una aplicación real esto sería parte de la carga real)
+        let progress = 0;
+        const progressFill = DOM.uploadProgress.querySelector('.progress-fill');
+        const progressText = DOM.uploadProgress.querySelector('.upload-percentage');
+        
+        const progressInterval = setInterval(() => {
+            progress += 5;
+            progressFill.style.width = `${progress}%`;
+            progressText.textContent = `${progress}%`;
             
-            // Simulate upload progress
-            let progress = 0;
-            const progressBar = DOM.uploadProgress.querySelector('.progress-fill');
-            const progressText = DOM.uploadProgress.querySelector('.upload-percentage');
-            
-            const uploadInterval = setInterval(() => {
-                progress += 10;
-                progressBar.style.width = `${progress}%`;
-                progressText.textContent = `${progress}%`;
-                
-                if (progress >= 100) {
-                    clearInterval(uploadInterval);
-                    setTimeout(() => {
-                        DOM.uploadProgress.style.display = 'none';
-                        addUploadedFilesToExplorer(files);
-                    }, 500);
-                }
-            }, 200);
-        }
+            if (progress >= 100) {
+                clearInterval(progressInterval);
+                setTimeout(() => {
+                    DOM.uploadProgress.style.display = 'none';
+                    
+                    // Añadir archivos al explorador
+                    addUploadedFilesToExplorer(files);
+                    
+                    // Verificar si existe la instancia del convertidor PDF
+                    if (window.pdfConverter) {
+                        // Iniciar el proceso de selección para convertir a PDF si se desea
+                        // Puedes mostrar un mensaje o activar alguna funcionalidad aquí
+                        console.log('Archivos subidos correctamente. Puede seleccionarlos para convertir a PDF.');
+                    }
+                }, 500);
+            }
+        }, 100);
     }
 
     function addUploadedFilesToExplorer(files) {
@@ -902,4 +1304,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial load of notifications
     loadNotifications();
+    // === Mostrar nombre del usuario logueado y manejar el menú ===
+const token = localStorage.getItem('token');
+const user = JSON.parse(localStorage.getItem('user'));
+
+if (!token || !user) {
+    window.location.href = 'index.html';
+}
+
+const userButton = document.getElementById('userButton');
+const userDropdown = document.getElementById('userDropdown');
+const userDisplayName = document.getElementById('userDisplayName');
+const logoutBtn = document.getElementById('logoutBtn');
+
+if (userButton && userDropdown && userDisplayName && logoutBtn) {
+    userButton.textContent = `👤 ${user.nombre}`;
+    userDisplayName.textContent = `${user.nombre} ${user.apellidos}`;
+
+    userButton.addEventListener('click', () => {
+        userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = 'index.html';
+    });
+}
+
 });

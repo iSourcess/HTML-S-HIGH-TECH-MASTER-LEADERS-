@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración | CUALTOS</title>
+    <link rel="stylesheet" href="styles/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="admin-profile">
+                <h3>Administrador</h3>
+                <p id="adminEmail">admin.cualtos@cualtos.udg.mx</p>
+            </div>
+            
+            <nav class="admin-menu">
+                <ul>
+                    <li class="active" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </li>
+                    <li data-section="tickets">
+                        <i class="fas fa-ticket-alt"></i> Tickets
+                        <span class="notification-badge" id="ticketsCount">0</span>
+                    </li>
+                    <li data-section="users">
+                        <i class="fas fa-users"></i> Usuarios
+                    </li>
+                    <li data-section="settings">
+                        <i class="fas fa-cog"></i> Configuración
+                    </li>
+                    <li id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="admin-header">
+                <h1>Panel de Administración</h1>
+                <div class="admin-actions">
+                    <button class="btn refresh-btn" id="refreshData">
+                        <i class="fas fa-sync-alt"></i> Actualizar datos
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section active">
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Tickets Pendientes</h3>
+                            <p class="stat-number" id="pendingTicketsCount">--</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Tickets Resueltos</h3>
+                            <p class="stat-number" id="resolvedTicketsCount">--</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Usuarios</h3>
+                            <p class="stat-number" id="totalUsersCount">--</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Hoy</h3>
+                            <p class="stat-date" id="currentDate">--</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="activity-container">
+                    <div class="recent-tickets">
+                        <div class="section-header">
+                            <h2>Tickets Recientes</h2>
+                            <a href="#" class="view-all" data-section="tickets">Ver todos</a>
+                        </div>
+                        <div class="tickets-list" id="recentTicketsList">
+                            <!-- Los tickets recientes se cargarán dinámicamente -->
+                            <div class="empty-state">
+                                <i class="fas fa-ticket-alt"></i>
+                                <p>No hay tickets recientes</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="system-status">
+                        <div class="section-header">
+                            <h2>Estado del Sistema</h2>
+                        </div>
+                        <div class="status-list">
+                            <div class="status-item">
+                                <div class="status-info">
+                                    <span class="status-name">Base de Datos</span>
+                                    <span class="status-indicator online">En línea</span>
+                                </div>
+                                <div class="status-bar">
+                                    <div class="status-progress" style="width: 85%"></div>
+                                </div>
+                                <div class="status-details">
+                                    <span>85% de capacidad</span>
+                                </div>
+                            </div>
+                            
+                            <div class="status-item">
+                                <div class="status-info">
+                                    <span class="status-name">Servidor Web</span>
+                                    <span class="status-indicator online">En línea</span>
+                                </div>
+                                <div class="status-bar">
+                                    <div class="status-progress" style="width: 42%"></div>
+                                </div>
+                                <div class="status-details">
+                                    <span>42% de carga</span>
+                                </div>
+                            </div>
+                            
+                            <div class="status-item">
+                                <div class="status-info">
+                                    <span class="status-name">Almacenamiento</span>
+                                    <span class="status-indicator warning">Advertencia</span>
+                                </div>
+                                <div class="status-bar">
+                                    <div class="status-progress warning" style="width: 89%"></div>
+                                </div>
+                                <div class="status-details">
+                                    <span>89% de capacidad</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tickets Section -->
+            <section id="tickets-section" class="content-section">
+                <div class="section-header with-actions">
+                    <h2>Gestión de Tickets</h2>
+                    <div class="action-buttons">
+                        <div class="search-container">
+                            <input type="text" id="ticketSearch" placeholder="Buscar tickets...">
+                            <button class="search-btn"><i class="fas fa-search"></i></button>
+                        </div>
+                        <div class="filter-container">
+                            <select id="ticketStatusFilter">
+                                <option value="all">Todos los estados</option>
+                                <option value="pending">Pendientes</option>
+                                <option value="inProgress">En proceso</option>
+                                <option value="resolved">Resueltos</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tickets-table-container">
+                    <table class="tickets-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Asunto</th>
+                                <th>Usuario</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ticketsTableBody">
+                            <!-- Los tickets se cargarán dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <div class="pagination">
+                    <button class="pagination-btn" id="prevPage" disabled>
+                        <i class="fas fa-chevron-left"></i> Anterior
+                    </button>
+                    <span class="pagination-info">Página <span id="currentPage">1</span> de <span id="totalPages">1</span></span>
+                    <button class="pagination-btn" id="nextPage" disabled>
+                        Siguiente <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Ticket Detail Modal -->
+            <div class="modal" id="ticketDetailModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Detalles del Ticket</h2>
+                        <span class="close-modal">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <div class="ticket-detail-header">
+                            <h3 id="ticketSubject">Cargando...</h3>
+                            <span class="ticket-status" id="ticketStatus">Pendiente</span>
+                        </div>
+                        
+                        <div class="ticket-detail-info">
+                            <p><strong>ID:</strong> <span id="ticketId"></span></p>
+                            <p><strong>Usuario:</strong> <span id="ticketUser"></span></p>
+                            <p><strong>Correo:</strong> <span id="ticketUserEmail"></span></p>
+                            <p><strong>Fecha:</strong> <span id="ticketDate"></span></p>
+                        </div>
+                        
+                        <div class="ticket-detail-content">
+                            <h4>Descripción:</h4>
+                            <p id="ticketDescription"></p>
+                            
+                            <div class="ticket-attachments" id="ticketAttachments">
+                                <h4>Archivos adjuntos:</h4>
+                                <div class="attachment-list" id="attachmentsList">
+                                    <!-- Los archivos adjuntos se cargarán dinámicamente -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ticket-conversation">
+                            <h4>Conversación:</h4>
+                            <div class="conversation-thread" id="conversationThread">
+                                <!-- Los mensajes de la conversación se cargarán dinámicamente -->
+                            </div>
+                            
+                            <div class="reply-form">
+                                <h4>Responder:</h4>
+                                <textarea id="replyMessage" placeholder="Escribe tu respuesta aquí..."></textarea>
+                                <div class="reply-actions">
+                                    <button class="btn" id="sendReply">Enviar Respuesta</button>
+                                    <div class="status-change">
+                                        <label for="changeStatus">Cambiar estado:</label>
+                                        <select id="changeStatus">
+                                            <option value="pending">Pendiente</option>
+                                            <option value="inProgress">En proceso</option>
+                                            <option value="resolved">Resuelto</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            <section id="users-section" class="content-section">
+                <div class="section-header with-actions">
+                    <h2>Gestión de Usuarios</h2>
+                    <div class="action-buttons">
+                        <div class="search-container">
+                            <input type="text" id="userSearch" placeholder="Buscar usuarios...">
+                            <button class="search-btn"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="users-table-container">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Correo Electrónico</th>
+                                <th>Fecha de Registro</th>
+                                <th>Tickets</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Los usuarios se cargarán dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <div class="pagination">
+                    <button class="pagination-btn" id="prevUserPage" disabled>
+                        <i class="fas fa-chevron-left"></i> Anterior
+                    </button>
+                    <span class="pagination-info">Página <span id="currentUserPage">1</span> de <span id="totalUserPages">1</span></span>
+                    <button class="pagination-btn" id="nextUserPage" disabled>
+                        Siguiente <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings-section" class="content-section">
+                <div class="section-header">
+                    <h2>Configuración del Sistema</h2>
+                </div>
+
+                <div class="settings-container">
+                    <div class="settings-card">
+                        <h3>General</h3>
+                        <form id="generalSettingsForm">
+                            <div class="form-group">
+                                <label for="siteName">Nombre del sitio:</label>
+                                <input type="text" id="siteName" value="Sistema de Tickets CUALTOS">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="siteDescription">Descripción:</label>
+                                <textarea id="siteDescription">Sistema de gestión de tickets y usuarios para CUALTOS UDG</textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="emailNotifications">Notificaciones por correo:</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="emailNotifications" checked>
+                                    <label for="emailNotifications"></label>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn">Guardar Configuración</button>
+                        </form>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <h3>Tickets</h3>
+                        <form id="ticketSettingsForm">
+                            <div class="form-group">
+                                <label for="autoAssign">Asignación automática:</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="autoAssign" checked>
+                                    <label for="autoAssign"></label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="ticketsPerPage">Tickets por página:</label>
+                                <select id="ticketsPerPage">
+                                    <option value="10">10</option>
+                                    <option value="25" selected>25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="ticketCategories">Categorías de tickets:</label>
+                                <div class="tag-input-container">
+                                    <input type="text" id="ticketCategories" placeholder="Añadir categoría...">
+                                    <button type="button" class="add-tag-btn">Añadir</button>
+                                </div>
+                                <div class="tags-container" id="categoriesTags">
+                                    <span class="tag">Soporte Técnico <i class="fas fa-times"></i></span>
+                                    <span class="tag">Acceso a Plataforma <i class="fas fa-times"></i></span>
+                                    <span class="tag">Consulta <i class="fas fa-times"></i></span>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn">Guardar Configuración</button>
+                        </form>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <h3>Seguridad</h3>
+                        <form id="securitySettingsForm">
+                            <div class="form-group">
+                                <label for="adminPassword">Cambiar contraseña de administrador:</label>
+                                <input type="password" id="adminPassword" placeholder="Nueva contraseña">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirmar contraseña:</label>
+                                <input type="password" id="confirmPassword" placeholder="Confirmar contraseña">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="twoFactorAuth">Autenticación de dos factores:</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="twoFactorAuth">
+                                    <label for="twoFactorAuth"></label>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn">Guardar Configuración</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/admin.js"></script>
+</body>
+</html>

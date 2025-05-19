@@ -1,148 +1,137 @@
-import { auth } from './firebase-config.js';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+// Aquí va todo tu código original de validaciones y barra de progreso (ejemplo):
+const form = document.getElementById('registrationForm');
+const submitBtn = document.getElementById('submitBtn');
+const nombre = document.getElementById('nombre');
+const apellidos = document.getElementById('apellidos');
+const email = document.getElementById('email');
+const password = document.getElementById('password');
+const confirmPassword = document.getElementById('confirmPassword');
 
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('registrationForm');
-    const progress = document.getElementById('formProgress');
-    const submitBtn = document.getElementById('submitBtn');
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
-    const strengthMeter = document.getElementById('strengthMeter');
-    const strengthText = document.getElementById('strengthText');
+const nombreError = document.getElementById('nombreError');
+const apellidosError = document.getElementById('apellidosError');
+const emailError = document.getElementById('emailError');
+const passwordError = document.getElementById('passwordError');
+const confirmPasswordError = document.getElementById('confirmPasswordError');
 
-    // Función para validar el formato del correo institucional
-    function validateEmail(email) {
-        const regex = /^[a-zA-Z]+\.[a-zA-Z]+@academicos\.udg\.mx$/;
-        return regex.test(email);
-    }
+const strengthMeter = document.getElementById('strengthMeter');
+const strengthText = document.getElementById('strengthText');
 
-    // Función para verificar la fortaleza de la contraseña
-    function checkPasswordStrength(password) {
-        let strength = 0;
-        const patterns = [
-            /[a-z]/, // minúsculas
-            /[A-Z]/, // mayúsculas
-            /[0-9]/, // números
-            /[^A-Za-z0-9]/, // caracteres especiales
-            /.{8,}/ // longitud mínima
-        ];
+// Ejemplo básico de validación y barra de progreso (adapta si tienes otro código)
+function checkInputs() {
+  let valid = true;
 
-        patterns.forEach(pattern => {
-            if (pattern.test(password)) strength++;
-        });
+  if (nombre.value.trim() === '') {
+    nombreError.style.display = 'block';
+    valid = false;
+  } else {
+    nombreError.style.display = 'none';
+  }
 
-        return strength;
-    }
+  if (apellidos.value.trim() === '') {
+    apellidosError.style.display = 'block';
+    valid = false;
+  } else {
+    apellidosError.style.display = 'none';
+  }
 
-    // Actualizar el medidor de fortaleza de la contraseña
-    function updatePasswordStrength() {
-        const strength = checkPasswordStrength(passwordInput.value);
-        const percentage = (strength / 5) * 100;
-        
-        strengthMeter.style.width = `${percentage}%`;
-        
-        // Cambiar el color según la fortaleza
-        strengthMeter.style.background = 
-            strength <= 2 ? '#ff4444' :  // Rojo para débil
-            strength <= 3 ? '#ffa700' :  // Naranja para regular
-            strength <= 4 ? '#2196F3' :  // Azul para buena
-            '#00C851';                   // Verde para fuerte
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(email.value.trim())) {
+    emailError.style.display = 'block';
+    valid = false;
+  } else {
+    emailError.style.display = 'none';
+  }
 
-        // Actualizar el texto descriptivo
-        strengthText.textContent = 
-            strength <= 2 ? 'Débil' :
-            strength <= 3 ? 'Regular' :
-            strength <= 4 ? 'Buena' : 'Fuerte';
-    }
+  if (password.value.length < 8) {
+    passwordError.style.display = 'block';
+    valid = false;
+  } else {
+    passwordError.style.display = 'none';
+  }
 
-    // Actualizar la barra de progreso del formulario
-    function updateFormProgress() {
-        const inputs = form.querySelectorAll('input[required]');
-        const totalInputs = inputs.length;
-        let filledInputs = 0;
+  if (password.value !== confirmPassword.value) {
+    confirmPasswordError.style.display = 'block';
+    valid = false;
+  } else {
+    confirmPasswordError.style.display = 'none';
+  }
 
-        inputs.forEach(input => {
-            if (input.value.trim() !== '') filledInputs++;
-        });
+  submitBtn.disabled = !valid;
+}
 
-        const percentage = (filledInputs / totalInputs) * 100;
-        progress.style.width = `${percentage}%`;
-        
-        // Validar si se pueden coincidir las contraseñas
-        const passwordsMatch = passwordInput.value === confirmPasswordInput.value;
-        
-        // Habilitar botón solo si todos los campos están llenos y las contraseñas coinciden
-        submitBtn.disabled = percentage !== 100 || !passwordsMatch;
-    }    
+// Aquí puedes añadir la lógica para mostrar la fuerza de la contraseña
+password.addEventListener('input', () => {
+  // Simple ejemplo de fuerza
+  const val = password.value;
+  let strength = 0;
+  if (val.length >= 8) strength++;
+  if (/[A-Z]/.test(val)) strength++;
+  if (/[0-9]/.test(val)) strength++;
+  if (/[^A-Za-z0-9]/.test(val)) strength++;
 
-    // Validación en tiempo real de los campos
-    form.addEventListener('input', function(e) {
-        const input = e.target;
-        const errorElement = document.getElementById(`${input.id}Error`);
+  switch (strength) {
+    case 0:
+    case 1:
+      strengthText.textContent = 'Débil';
+      strengthMeter.style.width = '25%';
+      strengthMeter.style.backgroundColor = 'red';
+      break;
+    case 2:
+      strengthText.textContent = 'Regular';
+      strengthMeter.style.width = '50%';
+      strengthMeter.style.backgroundColor = 'orange';
+      break;
+    case 3:
+      strengthText.textContent = 'Buena';
+      strengthMeter.style.width = '75%';
+      strengthMeter.style.backgroundColor = 'yellowgreen';
+      break;
+    case 4:
+      strengthText.textContent = 'Excelente';
+      strengthMeter.style.width = '100%';
+      strengthMeter.style.backgroundColor = 'green';
+      break;
+  }
+  checkInputs();
+});
 
-        // Validaciones específicas por campo
-        switch(input.id) {
-            case 'email':
-                if (!validateEmail(input.value)) {
-                    errorElement.style.display = 'block';
-                } else {
-                    errorElement.style.display = 'none';
-                }
-                break;
+nombre.addEventListener('input', checkInputs);
+apellidos.addEventListener('input', checkInputs);
+email.addEventListener('input', checkInputs);
+password.addEventListener('input', checkInputs);
+confirmPassword.addEventListener('input', checkInputs);
 
-            case 'password':
-                updatePasswordStrength();
-                // Verificar coincidencia de contraseñas si ambos campos tienen valor
-                if (confirmPasswordInput.value) {
-                    const confirmError = document.getElementById('confirmPasswordError');
-                    confirmError.style.display = 
-                        passwordInput.value !== confirmPasswordInput.value ? 'block' : 'none';
-                }
-                break;
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  checkInputs();
 
-            case 'confirmPassword':
-                const confirmError = document.getElementById('confirmPasswordError');
-                confirmError.style.display = 
-                    passwordInput.value !== confirmPasswordInput.value ? 'block' : 'none';
-                break;
-        }
+  if (submitBtn.disabled) return; // No enviar si no está validado
 
-        updateFormProgress();
+  // Prepara datos para enviar al backend
+  const data = {
+    nombre: nombre.value.trim(),
+    apellidos: apellidos.value.trim(),
+    email: email.value.trim(),
+    password: password.value,
+  };
+
+  try {
+    const res = await fetch('http://localhost:5000/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
     });
 
-    // Manejo del envío del formulario
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
+    const result = await res.json();
 
-        try {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            // Aquí puedes agregar lógica adicional para guardar el nombre y apellidos
-            // en una base de datos o en el perfil del usuario
-
-            alert('Registro exitoso! Por favor, inicia sesión.');
-            window.location.href = 'index.html';
-        } catch (error) {
-            let errorMessage = 'Error en el registro';
-            switch (error.code) {
-                case 'auth/email-already-in-use':
-                    errorMessage = 'Este correo electrónico ya está registrado';
-                    break;
-                case 'auth/invalid-email':
-                    errorMessage = 'Correo electrónico inválido';
-                    break;
-                case 'auth/operation-not-allowed':
-                    errorMessage = 'El registro con correo y contraseña no está habilitado';
-                    break;
-                case 'auth/weak-password':
-                    errorMessage = 'La contraseña es demasiado débil';
-                    break;
-            }
-            alert(errorMessage);
-        }
-    });
+    if (res.ok) {
+      alert('Usuario creado correctamente. Ya puedes iniciar sesión.');
+      window.location.href = 'index.html'; // o la página de login
+    } else {
+      alert(result.message || 'Error al crear el usuario');
+    }
+  } catch (error) {
+    console.error(error);
+    alert('Error de conexión con el servidor');
+  }
 });

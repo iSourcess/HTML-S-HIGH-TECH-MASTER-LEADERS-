@@ -1,0 +1,68 @@
+<!-- Diálogo de crear carpeta -->
+<div id="createFolderDialog" class="dialog">
+    <div class="dialog-content">
+        <h2>Nueva carpeta</h2>
+        <input type="text" id="folderName" placeholder="Nombre de la carpeta" />
+        <div class="dialog-actions">
+            <button class="btn cancel-btn" onclick="closeDialog('createFolderDialog')">Cancelar</button>
+            <button class="btn primary-btn" onclick="createFolder()">Crear</button>
+        </div>
+    </div>
+</div>
+
+<!-- Diálogo de subir archivo -->
+<div id="uploadDialog" class="dialog">
+    <div class="dialog-content">
+        <h2>Subir archivo</h2>
+        <div class="upload-area" id="uploadArea">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Arrastra y suelta archivos PDF aquí<br>o haz clic para seleccionar</p>
+        </div>
+        <div id="uploadProgress" class="upload-progress" style="display: none;">
+            <div class="upload-file-info">
+                <i class="fas fa-file-pdf"></i>
+                <span></span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="upload-percentage">0%</div>
+        </div>
+        <div class="dialog-actions">
+            <button class="btn cancel-btn" onclick="closeDialog('uploadDialog')">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Diálogo de vista previa de PDF -->
+<div id="previewDialog" class="dialog preview-dialog">
+    <div class="dialog-content">
+        <div class="dialog-header">
+            <h2>Vista previa</h2>
+            <button class="close-btn" onclick="closeDialog('previewDialog')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="preview-container">
+            <iframe id="previewFrame" class="pdf-preview"></iframe>
+        </div>
+        <div class="preview-info" id="previewInfo"></div>
+        <div class="dialog-actions">
+            <button class="btn cancel-btn" onclick="closeDialog('previewDialog')">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Menú de ordenamiento -->
+<div id="sortMenu" class="sort-menu">
+    <div class="sort-option" data-field="name">
+        <span>Nombre</span>
+        <i class="sort-icon fas fa-sort"></i>
+    </div>
+    <div class="sort-option" data-field="date">
+        <span>Fecha</span>
+        <i class="sort-icon fas fa-sort"></i>
+    </div>
+    <div class="sort-option" data-field="size">
+        <span>Tamaño</span>
+        <i class="sort-icon fas fa-sort"></i>
+    </div>
+</div>

@@ -87,6 +87,8 @@
                 <a href="#" class="nav-link menu-item">
                     <div class="nav-icon"><i class="fas fa-tasks"></i></div>
                     <div class="nav-text">Gestión</div>
+                    <div class="submenu-toggle">                    <div class="nav-icon"><i class="fas fa-tasks"></i></div>
+                    <div class="nav-text">Gestión</div>
                     <div class="submenu-toggle"><i class="fas fa-chevron-right"></i></div>
                 </a>
                 <ul class="submenu">
@@ -147,9 +149,13 @@
                     </div>
                 </div>
                 
-                <div class="user-menu">
-                    <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="User" class="user-avatar">
-                    <div class="user-name">Dr. Juan Pérez</div>
+                <div class="user-menu" id="userMenu">
+                    <button id="userButton" class="user-name">👤 Usuario</button>
+                    <div class="user-dropdown" id="userDropdown" style="display: none;">
+                        <div id="userDisplayName">Nombre Apellido</div>
+                        <a href="perfil.html">Mi perfil</a>
+                        <button id="logoutBtn">Cerrar sesión</button>
+                    </div>
                 </div>
             </div>
         </header>
